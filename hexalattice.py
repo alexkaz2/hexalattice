@@ -1,3 +1,13 @@
+# -----------------------------------------------------------
+# hexalattice module creates and prints hexagonal lattices
+#
+# (C) 2020 Alex Kazakov,
+# Released under MIT License
+# email alex.kazakov@mail.huji.ac.il
+# Full documentation: https://github.com/alexkaz2/hexalattice
+# -----------------------------------------------------------
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -18,6 +28,23 @@ def create_hex_grid(nx: int = 4,
                     rotate_deg: float = 0.,
                     keep_x_sym: bool = True,
                     h_ax: plt.Axes = None) -> (np.ndarray, plt.Axes):
+    """
+    Creates and prints hexagonal lattices.
+    :param nx: Number of horizontal hexagons in rectangular grid, [nx * ny]
+    :param ny: Number of vertical hexagons in rectangular grid, [nx * ny]
+    :param min_diam: Minimal diameter of each hexagon.
+    :param n: Alternative way to create rectangular grid. The final grid might have less hexagons
+    :param align_to_origin: Shift the grid s.t. the central tile will center at the origin
+    :param face_color: Provide RGB triplet, valid abbreviation (e.g. 'k') or RGB+alpha
+    :param edge_color: Provide RGB triplet, valid abbreviation (e.g. 'k') or RGB+alpha
+    :param plotting_gap: Gap between the edges of adjacent tiles, in fraction of min_diam
+    :param crop_circ: Disabled if 0. If >0 a circle of central tiles will be kept, with radius r=crop_circ
+    :param do_plot: Add the hexagon to an axes. If h_ax not provided a new figure will be opened.
+    :param rotate_deg: Rotate the grid around the center of the central tile, by rotate_deg degrees
+    :param keep_x_sym: NOT YET IMPLEMENTED
+    :param h_ax: Handle to axes. If provided the grid will be added to it, if not a new figure will be opened.
+    :return:
+    """
 
     args_are_ok = check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, plotting_gap, crop_circ,
                                do_plot, rotate_deg, keep_x_sym)
@@ -92,6 +119,10 @@ def check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, p
 
 
 def plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax=None):
+    """
+    Adds a single lattive to the axes canvas. Multiple calls can be made to overlay few lattices.
+    :return:
+    """
     if face_color is None:
         face_color = (1, 1, 1, 0)  # Make the face transparent
     if edge_color is None:
@@ -118,6 +149,10 @@ def plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plot
 
 
 def make_grid(nx, ny, min_diam, n, crop_circ, rotate_deg, align_to_origin) -> (np.ndarray, np.ndarray):
+    """
+    Computes the coordinates of the hexagon centers, given the size rotation and layout specifications
+    :return:
+    """
     ratio = np.sqrt(3) / 2
     if n > 0:  # n variable overwrites (nx, ny) in case all three were provided
         ny = int(np.sqrt(n / ratio))
@@ -161,20 +196,16 @@ def make_grid(nx, ny, min_diam, n, crop_circ, rotate_deg, align_to_origin) -> (n
     return coord_x, coord_y
 
 
-def plot_hex_grid():
-    pass
+def main():
 
-
-if __name__ == "__main__":
-
-    # === Create single hexagonal 5*5 lattice and plot it. Extract the [x,y] locations of the tile centers
+    # (1) === Create single hexagonal 5*5 lattice and plot it. Extract the [x,y] locations of the tile centers
     plt.ion()
     hex_centers, h_ax = create_hex_grid(nx=5, ny=5, do_plot=True)
     tile_centers_x = hex_centers[:, 0]
     tile_centers_y = hex_centers[:, 1]
     # plt.show(block=True)   % The 'show' call should be done explicitly
 
-    # === Create single hexagonal lattice, 5*5, rotated around central tile ====
+    # (2) === Create single hexagonal lattice, 5*5, rotated around central tile ====
     hex_centers, _ = create_hex_grid(nx=5,
                                   ny=5,
                                   plotting_gap=0.05,
@@ -184,7 +215,7 @@ if __name__ == "__main__":
                                   do_plot=True)
 
 
-    # === Plot Moire pattern with two round hexagonal grids ====
+    # (3) === Plot Moire pattern with two round hexagonal grids ====
     hex_grid1, h_ax = create_hex_grid(nx=50,
                                       ny=50,
                                       rotate_deg=0,
@@ -199,7 +230,7 @@ if __name__ == "__main__":
                     do_plot=True,
                     h_ax=h_ax)
 
-    # === Create 5 layers of grids of various sizes ====
+    # (4) === Create 5 layers of grids of various sizes ====
     face_c = [0.7, 0.7, 0.7, 0.1]
     _, h_ax = create_hex_grid(nx=5,
                                 ny=4,
@@ -232,3 +263,8 @@ if __name__ == "__main__":
                     do_plot=True,
                     h_ax=h_ax)
     plt.show(block=True)
+
+
+if __name__ == "__main__":
+    # Main function includes multiple examples
+    main()
