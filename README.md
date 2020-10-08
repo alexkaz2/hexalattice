@@ -1,4 +1,5 @@
 # hexalattice
+
 > Generate and plot hexagonal lattices in 2D, with fine control over spacing between hexagons, arbitrary rotation of the grid around central tile, etc.
 > The module computes and returns the center point for each fo the tiles in the lattice. 
 
@@ -10,6 +11,8 @@
 
 ## Installation
 
+[![PyPI version](https://badge.fury.io/py/hexalattice.svg)](https://pypi.python.org/pypi/hexalattice)
+![python version](https://upload.wikimedia.org/wikipedia/commons/f/fc/Blue_Python_3.7_Shield_Badge.svg)
 
 ```sh
 pip install hexalattice
