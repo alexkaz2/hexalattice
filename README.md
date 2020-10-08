@@ -1,7 +1,7 @@
 # hexalattice
 
-> Generate and plot hexagonal lattices in 2D, with fine control over spacing between hexagons, arbitrary rotation of the grid around central tile, etc.
-> The module computes and returns the center point for each fo the tiles in the lattice. 
+Generate and plot hexagonal lattices in 2D, with fine control over spacing between hexagons, arbitrary rotation of the grid around central tile, etc.
+The module computes and returns the center point for each fo the tiles in the lattice. 
 
 <p align="center">
   <img width="450" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/lattice6.png">
@@ -61,11 +61,11 @@ plt.show()
 Create Moiré pattern from two circularly cropped hexagrids:
 ```sh
 hex_grid1, h_ax = create_hex_grid(nx=50,
-                                      ny=50,
-                                      rotate_deg=0,
-                                      min_diam=1,
-                                      crop_circ=20,
-                                      do_plot=True)
+                                  ny=50,
+                                  rotate_deg=0,
+                                  min_diam=1,
+                                  crop_circ=20,
+                                  do_plot=True)
     create_hex_grid(nx=50,
                     ny=50,
                     min_diam=1,
