@@ -17,7 +17,7 @@ def create_hex_grid(nx: int = 4,
                     do_plot: bool = False,
                     rotate_deg: float = 0.,
                     keep_x_sym: bool = True,
-                    h_ax: plt.Axes = None) -> (Dict, plt.Axes):
+                    h_ax: plt.Axes = None) -> (np.ndarray, plt.Axes):
 
     args_are_ok = check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, plotting_gap, crop_circ,
                                do_plot, rotate_deg, keep_x_sym)
@@ -29,7 +29,7 @@ def create_hex_grid(nx: int = 4,
     if do_plot:
         h_ax = plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax)
 
-    return {'coord_x': coord_x, 'coord_y': coord_y}, h_ax
+    return np.hstack([coord_x, coord_y]), h_ax
 
 
 def check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, plotting_gap, crop_circ, do_plot,
@@ -167,17 +167,22 @@ def plot_hex_grid():
 
 if __name__ == "__main__":
 
+    # === Create single hexagonal 5*5 lattice and plot it. Extract the [x,y] locations of the tile centers
+    plt.ion()
+    hex_centers, h_ax = create_hex_grid(nx=5, ny=5, do_plot=True)
+    tile_centers_x = hex_centers[:, 0]
+    tile_centers_y = hex_centers[:, 1]
+    # plt.show(block=True)   % The 'show' call should be done explicitly
+
     # === Create single hexagonal lattice, 5*5, rotated around central tile ====
-    hex_centers = create_hex_grid(nx=5,
+    hex_centers, _ = create_hex_grid(nx=5,
                                   ny=5,
                                   plotting_gap=0.05,
                                   min_diam=1,
                                   rotate_deg=5,
                                   face_color=[0.9, 0.1, 0.1, 0.05],
                                   do_plot=True)
-    centers_x = hex_centers[:, 0]
-    centers_y = hex_centers[:, 1]
-    # plt.show(block=True)   % The 'show' call should be done explicitly
+
 
     # === Plot Moire pattern with two round hexagonal grids ====
     hex_grid1, h_ax = create_hex_grid(nx=50,
