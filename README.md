@@ -11,7 +11,7 @@ The module computes and returns the center point for each fo the tiles in the la
 
 ## Installation
 
-[![PyPI version](https://badge.fury.io/py/hexalattice.svg)](https://pypi.python.org/pypi/hexalattice)
+[![PyPI version](https://badge.fury.io/py/hexalattice.svg)](https://pypi.org/project/hexalattice/)
 ![python version](https://upload.wikimedia.org/wikipedia/commons/f/fc/Blue_Python_3.7_Shield_Badge.svg)
 
 ```sh
@@ -24,7 +24,7 @@ pip install hexalattice
 
 Create and plot 5x5 lattice of hexagons (as in first image):
 ```sh
-import hexalattice
+from hexalattice.hexalattice import *
 hex_centers, _ = create_hex_grid(nx=5,
                                  ny=5,
                                  do_plot=True)
