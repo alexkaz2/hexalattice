@@ -11,7 +11,7 @@ The module computes and returns the center point for each fo the tiles in the la
 
 ## Installation
 
-[![PyPI version](https://badge.fury.io/py/hexalattice.svg)](https://pypi.org/project/hexalattice/)
+[![PyPI version](https://badge.fury.io/py/hexalattice.svg)](https://badge.fury.io/py/hexalattice)
 ![python version](https://upload.wikimedia.org/wikipedia/commons/f/fc/Blue_Python_3.7_Shield_Badge.svg)
 
 ```sh
