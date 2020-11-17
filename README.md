@@ -79,7 +79,7 @@ hex_grid1, h_ax = create_hex_grid(nx=50,
   <img width="600" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/lattice2.png">
 </p>
 
-_For API and additional examples see the wiki [hexalattice API](https://github.com/alexkaz2/hexalattice/wiki/hexalattice)._
+_For API and additional examples see the wiki [hexalattice API](https://github.com/alexkaz2/hexalattice/wiki)._
 
 <p align="center">
   <img width="450" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/lattice1.png" hspace="10"/>
