@@ -13,9 +13,17 @@ The module computes and returns the center point for each fo the tiles in the la
 
 [![PyPI version](https://badge.fury.io/py/hexalattice.svg)](https://badge.fury.io/py/hexalattice)
 ![python version](https://upload.wikimedia.org/wikipedia/commons/f/fc/Blue_Python_3.7_Shield_Badge.svg)
+![conda](https://anaconda.org/conda-forge/hexalattice/badges/installer/conda.svg)
+![downloads_anaconda](https://anaconda.org/conda-forge/hexalattice/badges/downloads.svg)
+![license](https://anaconda.org/conda-forge/hexalattice/badges/license.svg)
 
 ```sh
+# Using pip
 pip install hexalattice
+```
+```sh
+# Using conda
+conda install -c conda-forge hexalattice
 ```
 
 
