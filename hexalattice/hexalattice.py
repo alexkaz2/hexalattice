@@ -318,7 +318,7 @@ def main():
                     h_ax=h_ax)
 
     # (5) === Color hexagons with custom colors ===
-    image_path = r'..\example_image.jpg'  # taken from https://en.wikipedia.org/wiki/Apple#/media/File:Red_Apple.jpg
+    image_path = r'example_image.jpg'  # taken from https://en.wikipedia.org/wiki/Apple#/media/File:Red_Apple.jpg
     hex_centers, h_ax = create_hex_grid(nx=50, ny=50, do_plot=False)
     colors = sample_colors_from_image_by_grid(image_path, hex_centers[:, 0], hex_centers[:, 1])
 
