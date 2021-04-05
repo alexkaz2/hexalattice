@@ -99,8 +99,8 @@ _For API and additional examples see the wiki [hexalattice API](https://github.c
 
 ## Release History
 
-* 1.0.0
-    * First version
+* v1.0 - First version
+* v1.1 - Added the option to assign different colors to hexagons
 
 ## About & License
 
