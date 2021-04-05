@@ -120,7 +120,7 @@ def check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, p
 
 def plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax=None):
     """
-    Adds a single lattive to the axes canvas. Multiple calls can be made to overlay few lattices.
+    Adds a single lattice to the axes canvas. Multiple calls can be made to overlay few lattices.
     :return:
     """
     if face_color is None:
@@ -196,10 +196,64 @@ def make_grid(nx, ny, min_diam, n, crop_circ, rotate_deg, align_to_origin) -> (n
     return coord_x, coord_y
 
 
+def plot_single_lattice_custom_colors(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax=None):
+    """
+    Plot hexagonal lattice where every hexagon is colored by an individual color.
+    All inputs are similar to the plot_single_lattice() except:
+    :param face_color: numpy array, Nx3 or Nx4 - Color list of length |coord_x| for each hexagon face.
+                                                 Each row is a RGB or RGBA values, e.g. [0.3 0.3 0.3 1]
+    :param edge_color: numpy array, Nx3 or Nx4 - Color list of length |coord_x| for each hexagon edge.
+                                                 Each row is a RGB or RGBA values, e.g. [0.3 0.3 0.3 1]
+    :return:
+    """
+
+    if h_ax is None:
+        h_fig = plt.figure(figsize=(5, 5))
+        h_ax = h_fig.add_axes([0.05, 0.05, 0.9, 0.9])
+
+    patches = []
+    for i, (curr_x, curr_y) in enumerate(zip(coord_x, coord_y)):
+        polygon = mpatches.RegularPolygon((curr_x, curr_y), numVertices=6,
+                                          radius=min_diam / np.sqrt(3) * (1 - plotting_gap),
+                                          orientation=np.deg2rad(-rotate_deg),
+                                          edgecolor=edge_color[i],
+                                          facecolor=face_color[i])
+        h_ax.add_artist(polygon)
+
+    h_ax.set_aspect('equal')
+    h_ax.axis([coord_x.min() - 2 * min_diam, coord_x.max() + 2 * min_diam, coord_y.min() - 2 * min_diam,
+               coord_y.max() + 2 * min_diam])
+    # plt.plot(0, 0, 'r.', markersize=5)   # Add red point at the origin
+    return h_ax
+
+
+def sample_colors_from_image_by_grid(image_path: str, x_coords, y_coords):
+    """
+    Sample colors of a set of points from an image.
+    :param image_path: str - Path to an image file (.png, .jpg)
+    :param x_coords: list - x coordinates of the hexagons. The range doesn't matter since it is rescaled to fit the image
+    :param y_coords: list - y -----//------
+    :return:
+    """
+    from matplotlib.image import imread
+    img = imread(image_path) / 255
+    img = np.flip(img, 0)  # Flip Y axis. Images = matrices where pixel [0, 0] is in the upper left corner
+
+    abs_min = np.min([x_coords.T, y_coords.T])
+    abs_max = np.max([x_coords.T, y_coords.T]) + 0.001
+    minor_image_dim = min(img.shape[0], img.shape[1])
+    p_x = np.floor((x_coords - abs_min) / (abs_max - abs_min) * minor_image_dim)
+    p_y = np.floor((y_coords - abs_min) / (abs_max - abs_min) * minor_image_dim)
+
+    colors = img[p_y.astype('int'), p_x.astype('int'), :]
+    return colors
+
+
 def main():
 
-    # (1) === Create single hexagonal 5*5 lattice and plot it. Extract the [x,y] locations of the tile centers
     plt.ion()
+
+    # (1) === Create single hexagonal 5*5 lattice and plot it. Extract the [x,y] locations of the tile centers
     hex_centers, h_ax = create_hex_grid(nx=5, ny=5, do_plot=True)
     tile_centers_x = hex_centers[:, 0]
     tile_centers_y = hex_centers[:, 1]
@@ -262,6 +316,22 @@ def main():
                     edge_color=[0.9, 0.9, 0.9],
                     do_plot=True,
                     h_ax=h_ax)
+
+    # (5) === Color hexagons with custom colors ===
+    image_path = r'..\example_image.jpg'  # taken from https://en.wikipedia.org/wiki/Apple#/media/File:Red_Apple.jpg
+    hex_centers, h_ax = create_hex_grid(nx=50, ny=50, do_plot=False)
+    colors = sample_colors_from_image_by_grid(image_path, hex_centers[:, 0], hex_centers[:, 1])
+
+    fig, axs = plt.subplots(1, 2)
+    axs[0].imshow(plt.imread(image_path))
+    plot_single_lattice_custom_colors(hex_centers[:, 0], hex_centers[:, 1],
+                                      face_color=colors,
+                                      edge_color=colors,
+                                      min_diam=0.9,
+                                      plotting_gap=0.05,
+                                      rotate_deg=0,
+                                      h_ax=axs[1])
+
     plt.show(block=True)
 
 
