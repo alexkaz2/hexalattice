@@ -94,6 +94,8 @@ _For API and additional examples see the wiki [hexalattice API](https://github.c
 </p> 
 <p align="center">
   <img width="450" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/lattice4.png" hspace="10"/>
+</p>
+<p align="center">
   <img width="450" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/lattice7.png" hspace="10"/>
 </p>
 
