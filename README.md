@@ -4,7 +4,7 @@ Generate and plot hexagonal lattices in 2D, with fine control over spacing betwe
 The module computes and returns the center point for each fo the tiles in the lattice. 
 
 <p align="center">
-  <img width="450" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/lattice6.png">
+  <img width="1000" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/collage.png">
 </p>
 
 
@@ -90,11 +90,11 @@ hex_grid1, h_ax = create_hex_grid(nx=50,
 _For API and additional examples see the wiki [hexalattice API](https://github.com/alexkaz2/hexalattice/wiki)._
 
 <p align="center">
-  <img width="900" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/Figure_1.png" hspace="10"/>
+  <img width="450" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/hexalattice_5x5_nogaps.png" hspace="10"/>
 </p> 
 <p align="center">
-  <img width="450" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/lattice1.png" hspace="10"/>
-  <img width="450" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/lattice3.png" hspace="10"/>
+  <img width="450" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/lattice4.png" hspace="10"/>
+  <img width="450" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/lattice7.png" hspace="10"/>
 </p>
 
 ## Release History
