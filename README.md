@@ -87,7 +87,7 @@ hex_grid1, h_ax = create_hex_grid(nx=50,
   <img width="600" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/lattice2.png">
 </p>
 
-_For API and additional examples see the wiki [hexalattice API](https://github.com/alexkaz2/hexalattice/wiki)._
+_For API and additional examples see the wiki [hexalattice API](https://github.com/alexkaz2/hexalattice/wiki) and [assigning individual colors to hexagons](https://github.com/alexkaz2/hexalattice/wiki/Assigning-individual-colors-to-hexagons)._
 
 <p align="center">
   <img width="450" src="https://github.com/alexkaz2/hexalattice/blob/master/example_hexagonal_lattices/hexalattice_5x5_nogaps.png" hspace="10"/>
