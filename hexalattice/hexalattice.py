@@ -12,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.collections import PatchCollection
-from typing import List, Dict, Union
+from typing import List, Union
 
 
 def create_hex_grid(nx: int = 4,
@@ -71,7 +71,8 @@ def check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, p
         print('Argument error in hex_grid: nx, ny and n are expected to be integers')
         args_are_valid = False
 
-    if (not isinstance(min_diam, (float, int))) or (not isinstance(crop_circ, (float, int))) or (min_diam < 0) or (crop_circ < 0):
+    if (not isinstance(min_diam, (float, int))) or (not isinstance(crop_circ, (float, int))) or (min_diam < 0) or \
+            (crop_circ < 0):
         print('Argument error in hex_grid: min_diam and crop_circ are expected to be floats')
         args_are_valid = False
 
@@ -81,7 +82,7 @@ def check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, p
 
     VALID_C_ABBR = {'b', 'g', 'r', 'c', 'm', 'y', 'k', 'w'}
     if (isinstance(face_color, str) and (not face_color in VALID_C_ABBR)) or \
-        (isinstance(edge_color, str) and (not edge_color in VALID_C_ABBR)):
+       (isinstance(edge_color, str) and (not edge_color in VALID_C_ABBR)):
         print('Argument error in hex_grid: edge_color and face_color are expected to valid color abbrs, e.g. `k`')
         args_are_valid = False
 
@@ -110,10 +111,9 @@ def check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, p
         print('Argument error in hex_grid: Cropping radius is expected to be bigger than a single hexagon diameter')
         args_are_valid = False
 
-    if (not isinstance(keep_x_sym, bool)):
+    if not isinstance(keep_x_sym, bool):
         print('Argument error in hex_grid: keep_x_sym is expected to be boolean')
         args_are_valid = False
-
 
     return args_are_valid
 
@@ -160,13 +160,13 @@ def make_grid(nx, ny, min_diam, n, crop_circ, rotate_deg, align_to_origin) -> (n
 
     coord_x, coord_y = np.meshgrid(np.arange(nx), np.arange(ny), sparse=False, indexing='xy')
     coord_y = coord_y * ratio
-    coord_x = coord_x.astype(np.float)
+    coord_x = coord_x.astype('float')
     coord_x[1::2, :] += 0.5
     coord_x = coord_x.reshape(-1, 1)
     coord_y = coord_y.reshape(-1, 1)
 
     coord_x *= min_diam  # Scale to requested size
-    coord_y = coord_y.astype(np.float) * min_diam
+    coord_y = coord_y.astype('float') * min_diam
 
     mid_x = (np.ceil(nx / 2) - 1) + 0.5 * (np.ceil(ny/2) % 2 == 0)  # Pick center of some hexagon as origin for rotation or crop...
     mid_y = (np.ceil(ny / 2) - 1) * ratio  # np.median() averages center 2 values for even arrays :\
@@ -196,10 +196,18 @@ def make_grid(nx, ny, min_diam, n, crop_circ, rotate_deg, align_to_origin) -> (n
     return coord_x, coord_y
 
 
-def plot_single_lattice_custom_colors(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax=None):
+def plot_single_lattice_custom_colors(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg,
+                                      line_width=1., h_ax=None):
     """
     Plot hexagonal lattice where every hexagon is colored by an individual color.
     All inputs are similar to the plot_single_lattice() except:
+    :param line_width:
+    :param h_ax:
+    :param rotate_deg:
+    :param plotting_gap:
+    :param min_diam:
+    :param coord_y:
+    :param coord_x:
     :param face_color: numpy array, Nx3 or Nx4 - Color list of length |coord_x| for each hexagon face.
                                                  Each row is a RGB or RGBA values, e.g. [0.3 0.3 0.3 1]
     :param edge_color: numpy array, Nx3 or Nx4 - Color list of length |coord_x| for each hexagon edge.
@@ -211,13 +219,12 @@ def plot_single_lattice_custom_colors(coord_x, coord_y, face_color, edge_color, 
         h_fig = plt.figure(figsize=(5, 5))
         h_ax = h_fig.add_axes([0.05, 0.05, 0.9, 0.9])
 
-    patches = []
     for i, (curr_x, curr_y) in enumerate(zip(coord_x, coord_y)):
         polygon = mpatches.RegularPolygon((curr_x, curr_y), numVertices=6,
                                           radius=min_diam / np.sqrt(3) * (1 - plotting_gap),
                                           orientation=np.deg2rad(-rotate_deg),
                                           edgecolor=edge_color[i],
-                                          facecolor=face_color[i])
+                                          facecolor=face_color[i], linewidth=line_width)
         h_ax.add_artist(polygon)
 
     h_ax.set_aspect('equal')
@@ -261,13 +268,12 @@ def main():
 
     # (2) === Create single hexagonal lattice, 5*5, rotated around central tile ====
     hex_centers, _ = create_hex_grid(nx=5,
-                                  ny=5,
-                                  plotting_gap=0.05,
-                                  min_diam=1,
-                                  rotate_deg=5,
-                                  face_color=[0.9, 0.1, 0.1, 0.05],
-                                  do_plot=True)
-
+                                     ny=5,
+                                     plotting_gap=0.05,
+                                     min_diam=1,
+                                     rotate_deg=5,
+                                     face_color=[0.9, 0.1, 0.1, 0.05],
+                                     do_plot=True)
 
     # (3) === Plot Moire pattern with two round hexagonal grids ====
     hex_grid1, h_ax = create_hex_grid(nx=50,
@@ -287,11 +293,11 @@ def main():
     # (4) === Create 5 layers of grids of various sizes ====
     face_c = [0.7, 0.7, 0.7, 0.1]
     _, h_ax = create_hex_grid(nx=5,
-                                ny=4,
-                                plotting_gap=0.2,
-                                face_color=face_c,
-                                min_diam=1,
-                                do_plot=True)
+                              ny=4,
+                              plotting_gap=0.2,
+                              face_color=face_c,
+                              min_diam=1,
+                              do_plot=True)
     create_hex_grid(nx=4,
                     ny=3,
                     min_diam=1,
@@ -322,15 +328,32 @@ def main():
     hex_centers, h_ax = create_hex_grid(nx=50, ny=50, do_plot=False)
     colors = sample_colors_from_image_by_grid(image_path, hex_centers[:, 0], hex_centers[:, 1])
 
-    fig, axs = plt.subplots(1, 2)
-    axs[0].imshow(plt.imread(image_path))
+    fig, axs = plt.subplots(2, 2)
+    axs[0, 0].imshow(plt.imread(image_path))
     plot_single_lattice_custom_colors(hex_centers[:, 0], hex_centers[:, 1],
                                       face_color=colors,
                                       edge_color=colors,
-                                      min_diam=0.9,
-                                      plotting_gap=0.05,
+                                      min_diam=1.,
+                                      plotting_gap=0,
                                       rotate_deg=0,
-                                      h_ax=axs[1])
+                                      line_width=0.3,
+                                      h_ax=axs[0, 1])
+    plot_single_lattice_custom_colors(hex_centers[:, 0], hex_centers[:, 1],
+                                      face_color=colors,
+                                      edge_color=colors*0,
+                                      min_diam=1.,
+                                      plotting_gap=0,
+                                      rotate_deg=0,
+                                      line_width=1.,
+                                      h_ax=axs[1, 0])
+    plot_single_lattice_custom_colors(hex_centers[:, 0], hex_centers[:, 1],
+                                      face_color=colors,
+                                      edge_color=colors*0,
+                                      min_diam=1.,
+                                      plotting_gap=0,
+                                      rotate_deg=0,
+                                      line_width=0.1,
+                                      h_ax=axs[1, 1])
 
     plt.show(block=True)
 
