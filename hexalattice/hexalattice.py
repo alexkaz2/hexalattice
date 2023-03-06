@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.collections import PatchCollection
 from typing import List, Union
+import matplotlib
+matplotlib.use('Qt5Agg')
 
 
 def create_hex_grid(nx: int = 4,
@@ -27,7 +29,9 @@ def create_hex_grid(nx: int = 4,
                     do_plot: bool = False,
                     rotate_deg: float = 0.,
                     keep_x_sym: bool = True,
-                    h_ax: plt.Axes = None) -> (np.ndarray, plt.Axes):
+                    h_ax: plt.Axes = None,
+                    line_width: float = 0.2,
+                    background_color: Union[List[float], str] = None) -> (np.ndarray, plt.Axes):
     """
     Creates and prints hexagonal lattices.
     :param nx: Number of horizontal hexagons in rectangular grid, [nx * ny]
@@ -43,24 +47,27 @@ def create_hex_grid(nx: int = 4,
     :param rotate_deg: Rotate the grid around the center of the central tile, by rotate_deg degrees
     :param keep_x_sym: NOT YET IMPLEMENTED
     :param h_ax: Handle to axes. If provided the grid will be added to it, if not a new figure will be opened.
+    :param line_width: The width of the hexagon lines
+    :param background_color: The color of the axis background
     :return:
     """
 
     args_are_ok = check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, plotting_gap, crop_circ,
-                               do_plot, rotate_deg, keep_x_sym)
+                               do_plot, rotate_deg, keep_x_sym, background_color)
     if not args_are_ok:
         print('Aborting hexagonal grid creation...')
         exit()
     coord_x, coord_y = make_grid(nx, ny, min_diam, n, crop_circ, rotate_deg, align_to_origin)
 
     if do_plot:
-        h_ax = plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax)
+        h_ax = plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax,
+                                   background_color, line_width)
 
     return np.hstack([coord_x, coord_y]), h_ax
 
 
 def check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, plotting_gap, crop_circ, do_plot,
-                 rotate_deg, keep_x_sym):
+                 rotate_deg, keep_x_sym, background_color):
     """
     Validate input types, ranges and co-compatibility
     :return: bool - Assertion verdict
@@ -82,13 +89,16 @@ def check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, p
 
     VALID_C_ABBR = {'b', 'g', 'r', 'c', 'm', 'y', 'k', 'w'}
     if (isinstance(face_color, str) and (not face_color in VALID_C_ABBR)) or \
-       (isinstance(edge_color, str) and (not edge_color in VALID_C_ABBR)):
+            (isinstance(background_color, str) and (not background_color in VALID_C_ABBR)) or \
+            (isinstance(edge_color, str) and (not edge_color in VALID_C_ABBR)):
         print('Argument error in hex_grid: edge_color and face_color are expected to valid color abbrs, e.g. `k`')
         args_are_valid = False
 
     if (isinstance(face_color, List) and ((len(face_color) not in (3, 4)) or
                                           (True in ((x < 0) or (x > 1) for x in face_color)))) or \
-        (isinstance(edge_color, List) and ((len(edge_color) not in (3, 4)) or
+            (isinstance(background_color, List) and ((len(background_color) not in (3, 4)) or
+                                               (True in ((x < 0) or (x > 1) for x in face_color)))) or \
+            (isinstance(edge_color, List) and ((len(edge_color) not in (3, 4)) or
                                           (True in ((x < 0) or (x > 1) for x in edge_color)))):
         print('Argument error in hex_grid: edge_color and face_color are expected to be valid RGB color triplets or '
               'color abbreviations, e.g. [0.1 0.3 0.95] or `k`')
@@ -118,7 +128,8 @@ def check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, p
     return args_are_valid
 
 
-def plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax=None):
+def plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax=None,
+                        background_color=None, line_width=0.2):
     """
     Adds a single lattice to the axes canvas. Multiple calls can be made to overlay few lattices.
     :return:
@@ -132,13 +143,15 @@ def plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plot
         h_fig = plt.figure(figsize=(5, 5))
         h_ax = h_fig.add_axes([0.05, 0.05, 0.9, 0.9])
 
+    if background_color is not None:
+        h_ax.set_facecolor(background_color)
     patches = []
     for curr_x, curr_y in zip(coord_x, coord_y):
         polygon = mpatches.RegularPolygon((curr_x, curr_y), numVertices=6,
                                           radius=min_diam / np.sqrt(3) * (1 - plotting_gap),
                                           orientation=np.deg2rad(-rotate_deg))
         patches.append(polygon)
-    collection = PatchCollection(patches, edgecolor=edge_color, facecolor=face_color)
+    collection = PatchCollection(patches, edgecolor=edge_color, facecolor=face_color, linewidths=line_width)
     h_ax.add_collection(collection)
 
     h_ax.set_aspect('equal')
@@ -197,7 +210,7 @@ def make_grid(nx, ny, min_diam, n, crop_circ, rotate_deg, align_to_origin) -> (n
 
 
 def plot_single_lattice_custom_colors(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg,
-                                      line_width=1., h_ax=None):
+                                      line_width=1., h_ax=None, background_color=None):
     """
     Plot hexagonal lattice where every hexagon is colored by an individual color.
     All inputs are similar to the plot_single_lattice() except:
@@ -218,6 +231,8 @@ def plot_single_lattice_custom_colors(coord_x, coord_y, face_color, edge_color, 
     if h_ax is None:
         h_fig = plt.figure(figsize=(5, 5))
         h_ax = h_fig.add_axes([0.05, 0.05, 0.9, 0.9])
+        if background_color is not None:
+            h_ax.set_facecolor(background_color)
 
     for i, (curr_x, curr_y) in enumerate(zip(coord_x, coord_y)):
         polygon = mpatches.RegularPolygon((curr_x, curr_y), numVertices=6,
@@ -320,6 +335,7 @@ def main():
     create_hex_grid(nx=10,
                     ny=10,
                     edge_color=[0.9, 0.9, 0.9],
+                    line_width=0.3,
                     do_plot=True,
                     h_ax=h_ax)
 
