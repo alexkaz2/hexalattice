@@ -10,8 +10,8 @@ with open("README.md", "r") as fh:
 
 # This call to setup() does all the work
 setuptools.setup(
-    name="hexalattice-alexkaz",
-    version="1.2.1",
+    name="hexalattice",
+    version="1.2.2",
     description="Compute and plot hexagonal grids",
     long_description=long_description,
     long_description_content_type="text/markdown",
