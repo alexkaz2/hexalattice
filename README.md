@@ -12,10 +12,11 @@ The module computes and returns the center point for each of the tiles in the la
 ## Installation
 
 [![PyPI version](https://badge.fury.io/py/hexalattice.svg)](https://badge.fury.io/py/hexalattice)
+![conda](https://anaconda.org/conda-forge/hexalattice/badges/version.svg)
 ![python version](https://upload.wikimedia.org/wikipedia/commons/f/fc/Blue_Python_3.7_Shield_Badge.svg)
-![conda](https://anaconda.org/conda-forge/hexalattice/badges/installer/conda.svg)
 ![downloads_anaconda](https://anaconda.org/conda-forge/hexalattice/badges/downloads.svg)
 ![license](https://anaconda.org/conda-forge/hexalattice/badges/license.svg)
+![last updated](https://anaconda.org/conda-forge/hexalattice/badges/latest_release_relative_date.svg)
 
 ```sh
 # Using pip
@@ -104,6 +105,7 @@ _For API and additional examples see the wiki [hexalattice API](https://github.c
 * v1.0.0 - First version
 * v1.1.0 - Added the option to assign different colors to hexagons
 * v1.2.0 - Added control over the outer line width of the hexagons
+* v1.2.2 - Added control over the axis background color
 
 ## About & License
 
