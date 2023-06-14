@@ -14,7 +14,6 @@ import matplotlib.patches as mpatches
 from matplotlib.collections import PatchCollection
 from typing import List, Union
 import matplotlib
-matplotlib.use('Qt5Agg')
 
 
 def create_hex_grid(nx: int = 4,
