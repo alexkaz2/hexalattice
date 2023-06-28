@@ -285,7 +285,6 @@ def sample_colors_from_image_by_grid(image_path: str, x_coords, y_coords):
 
 
 def main():
-    matplotlib.use('Qt5Agg')
     plt.ion()
 
     # (1) === Create single hexagonal 5*5 lattice and plot it. Extract the [x,y] locations of the tile centers
