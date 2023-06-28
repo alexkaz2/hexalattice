@@ -144,11 +144,15 @@ def plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plot
 
     if background_color is not None:
         h_ax.set_facecolor(background_color)
+        
+    radius = radius=min_diam / np.sqrt(3) * (1 - plotting_gap)
+    orientation = np.deg2rad(-rotate_deg)
+    
     patches = []
     for curr_x, curr_y in zip(coord_x, coord_y):
         polygon = mpatches.RegularPolygon((curr_x, curr_y), numVertices=6,
-                                          radius=min_diam / np.sqrt(3) * (1 - plotting_gap),
-                                          orientation=np.deg2rad(-rotate_deg))
+                                          radius=radius,
+                                          orientation=orientation)
         patches.append(polygon)
     collection = PatchCollection(patches, edgecolor=edge_color, facecolor=face_color, linewidths=line_width)
     h_ax.add_collection(collection)
@@ -233,13 +237,23 @@ def plot_single_lattice_custom_colors(coord_x, coord_y, face_color, edge_color, 
         if background_color is not None:
             h_ax.set_facecolor(background_color)
 
-    for i, (curr_x, curr_y) in enumerate(zip(coord_x, coord_y)):
+    radius = min_diam / np.sqrt(3) * (1 - plotting_gap)
+    orientation = np.deg2rad(-rotate_deg)
+
+    polygons = []
+
+    for curr_x, curr_y in zip(coord_x, coord_y):
         polygon = mpatches.RegularPolygon((curr_x, curr_y), numVertices=6,
-                                          radius=min_diam / np.sqrt(3) * (1 - plotting_gap),
-                                          orientation=np.deg2rad(-rotate_deg),
-                                          edgecolor=edge_color[i],
-                                          facecolor=face_color[i], linewidth=line_width)
-        h_ax.add_artist(polygon)
+                                          radius=radius,
+                                          orientation=orientation)
+        polygons.append(polygon)
+
+    h_ax.add_artist(
+        PatchCollection(
+            patches=polygons,
+            facecolors=face_color,
+            edgecolors=edge_color,
+            linewidth=line_width))
 
     h_ax.set_aspect('equal')
     h_ax.axis([coord_x.min() - 2 * min_diam, coord_x.max() + 2 * min_diam, coord_y.min() - 2 * min_diam,
@@ -271,7 +285,7 @@ def sample_colors_from_image_by_grid(image_path: str, x_coords, y_coords):
 
 
 def main():
-
+    matplotlib.use('Qt5Agg')
     plt.ion()
 
     # (1) === Create single hexagonal 5*5 lattice and plot it. Extract the [x,y] locations of the tile centers
