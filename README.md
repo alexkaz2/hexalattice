@@ -106,6 +106,7 @@ _For API and additional examples see the wiki [hexalattice API](https://github.c
 * v1.1.0 - Added the option to assign different colors to hexagons
 * v1.2.0 - Added control over the outer line width of the hexagons
 * v1.2.2 - Added control over the axis background color
+* v1.3.0 - Reduced runtime by 50%
 
 ## About & License
 
