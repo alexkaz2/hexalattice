@@ -418,6 +418,11 @@ def main():
                                       line_width=0.1,
                                       h_ax=axs[1, 1])
 
+    # (6) === Create single hexagonal 5*5 lattice but plot circles on it. Extract the [x,y] locations of the tile centers
+    hex_centers, h_ax = create_hex_grid(nx=5, ny=5, do_plot=True, shape="circle")
+    tile_centers_x = hex_centers[:, 0]
+    tile_centers_y = hex_centers[:, 1]
+
     plt.show(block=True)
 
 
