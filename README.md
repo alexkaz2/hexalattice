@@ -31,11 +31,11 @@ conda install -c conda-forge hexalattice
 
 ## Usage example
 
-Create and plot 5x5 lattice of hexagons (as in first image):
+Create and plot 5x5 lattice of hexagons (as in first image) or circles on a hexagonal lattice:
 ```sh
 from hexalattice.hexalattice import *
 hex_centers, _ = create_hex_grid(nx=5,
-                                 ny=5,
+                                 ny=5, # shape="circle", # uncomment to plot circles
                                  do_plot=True)
                                  
 plt.show()    # import matplotlib.pyplot as plt
