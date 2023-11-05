@@ -27,6 +27,7 @@ def create_hex_grid(nx: int = 4,
                     crop_circ: float = 0.,
                     do_plot: bool = False,
                     rotate_deg: float = 0.,
+                    shape: str ="hexagon" ,
                     keep_x_sym: bool = True,
                     h_ax: plt.Axes = None,
                     line_width: float = 0.2,
@@ -48,25 +49,26 @@ def create_hex_grid(nx: int = 4,
     :param h_ax: Handle to axes. If provided the grid will be added to it, if not a new figure will be opened.
     :param line_width: The width of the hexagon lines
     :param background_color: The color of the axis background
+    :param shape: The shape plotted on the grid
     :return:
     """
 
     args_are_ok = check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, plotting_gap, crop_circ,
-                               do_plot, rotate_deg, keep_x_sym, background_color)
+                               do_plot, rotate_deg, shape, keep_x_sym, background_color)
     if not args_are_ok:
         print('Aborting hexagonal grid creation...')
         exit()
     coord_x, coord_y = make_grid(nx, ny, min_diam, n, crop_circ, rotate_deg, align_to_origin)
 
     if do_plot:
-        h_ax = plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax,
+        h_ax = plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, shape, h_ax,
                                    background_color, line_width)
 
     return np.hstack([coord_x, coord_y]), h_ax
 
 
 def check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, plotting_gap, crop_circ, do_plot,
-                 rotate_deg, keep_x_sym, background_color):
+                 rotate_deg, shape, keep_x_sym, background_color):
     """
     Validate input types, ranges and co-compatibility
     :return: bool - Assertion verdict
@@ -123,11 +125,17 @@ def check_inputs(nx, ny, min_diam, n, align_to_origin, face_color, edge_color, p
     if not isinstance(keep_x_sym, bool):
         print('Argument error in hex_grid: keep_x_sym is expected to be boolean')
         args_are_valid = False
+    
+    VALID_SHAPES = {"hexagon", "circle"}
+    if shape not in VALID_SHAPES:
+        print('Argument error in hex_grid: shape is expected to be "hexagon" or "circle"')
+        args_are_valid = False
+
 
     return args_are_valid
 
 
-def plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax=None,
+def plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, shape, h_ax=None,
                         background_color=None, line_width=0.2):
     """
     Adds a single lattice to the axes canvas. Multiple calls can be made to overlay few lattices.
@@ -145,15 +153,33 @@ def plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plot
     if background_color is not None:
         h_ax.set_facecolor(background_color)
         
-    radius = radius=min_diam / np.sqrt(3) * (1 - plotting_gap)
+    if shape == "circle": # I am uncertain here
+        radius = min_diam / 2 * (1 - plotting_gap)
+    else:  # Default to hexagon
+        radius = min_diam / np.sqrt(3) * (1 - plotting_gap)
     orientation = np.deg2rad(-rotate_deg)
+    
+    
+    
+    # def plot_single_lattice(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, h_ax=None, background_color=None, line_width=0.2, shape="hexagon"):
+    # ...
+    # for curr_x, curr_y in zip(coord_x, coord_y):
+    #     if shape == "circle":
+    #         patch = mpatches.Circle((curr_x, curr_y), radius=radius)
+    #     else:
+    #         patch = mpatches.RegularPolygon((curr_x, curr_y), numVertices=6, radius=radius, orientation=orientation)
+    #     patches.append(patch)
+    # ...
     
     patches = []
     for curr_x, curr_y in zip(coord_x, coord_y):
-        polygon = mpatches.RegularPolygon((curr_x, curr_y), numVertices=6,
-                                          radius=radius,
-                                          orientation=orientation)
-        patches.append(polygon)
+        if shape == "circle":
+            patch = mpatches.Circle((curr_x, curr_y), radius=radius)
+        else:
+            patch = mpatches.RegularPolygon((curr_x, curr_y), numVertices=6,
+                                            radius=radius,
+                                            orientation=orientation)
+        patches.append(patch)
     collection = PatchCollection(patches, edgecolor=edge_color, facecolor=face_color, linewidths=line_width)
     h_ax.add_collection(collection)
 
@@ -212,7 +238,7 @@ def make_grid(nx, ny, min_diam, n, crop_circ, rotate_deg, align_to_origin) -> (n
     return coord_x, coord_y
 
 
-def plot_single_lattice_custom_colors(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg,
+def plot_single_lattice_custom_colors(coord_x, coord_y, face_color, edge_color, min_diam, plotting_gap, rotate_deg, shape,
                                       line_width=1., h_ax=None, background_color=None):
     """
     Plot hexagonal lattice where every hexagon is colored by an individual color.
@@ -237,20 +263,26 @@ def plot_single_lattice_custom_colors(coord_x, coord_y, face_color, edge_color, 
         if background_color is not None:
             h_ax.set_facecolor(background_color)
 
-    radius = min_diam / np.sqrt(3) * (1 - plotting_gap)
+    if shape == "circle": # I am uncertain here
+        radius = min_diam / 2 * (1 - plotting_gap)
+    else:  # Default to hexagon
+        radius = min_diam / np.sqrt(3) * (1 - plotting_gap)
+
     orientation = np.deg2rad(-rotate_deg)
 
-    polygons = []
-
+    patches = []
     for curr_x, curr_y in zip(coord_x, coord_y):
-        polygon = mpatches.RegularPolygon((curr_x, curr_y), numVertices=6,
-                                          radius=radius,
-                                          orientation=orientation)
-        polygons.append(polygon)
+        if shape == "circle":
+            patch = mpatches.Circle((curr_x, curr_y), radius=radius)
+        else:  # Default to hexagon
+            patch = mpatches.RegularPolygon((curr_x, curr_y), numVertices=6,
+                                            radius=radius,
+                                            orientation=orientation)
+        patches.append(patch)
 
     h_ax.add_artist(
         PatchCollection(
-            patches=polygons,
+            patches=patches,
             facecolors=face_color,
             edgecolors=edge_color,
             linewidth=line_width))
@@ -364,6 +396,7 @@ def main():
                                       min_diam=1.,
                                       plotting_gap=0,
                                       rotate_deg=0,
+                                      shape="hexagon",
                                       line_width=0.3,
                                       h_ax=axs[0, 1])
     plot_single_lattice_custom_colors(hex_centers[:, 0], hex_centers[:, 1],
@@ -372,6 +405,7 @@ def main():
                                       min_diam=1.,
                                       plotting_gap=0,
                                       rotate_deg=0,
+                                      shape="hexagon",
                                       line_width=1.,
                                       h_ax=axs[1, 0])
     plot_single_lattice_custom_colors(hex_centers[:, 0], hex_centers[:, 1],
@@ -380,6 +414,7 @@ def main():
                                       min_diam=1.,
                                       plotting_gap=0,
                                       rotate_deg=0,
+                                      shape="hexagon",
                                       line_width=0.1,
                                       h_ax=axs[1, 1])
 
